@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Local_community_Back.Data;
+using Local_community_Back.Model;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,20 +11,33 @@ namespace Local_community_Back.Controllers
     [ApiController]
     public class AppealController : ControllerBase
     {
+        private readonly CommunityContext _context;
+        public AppealController(CommunityContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/<AppealController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<Appeal>>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return await _context.Appeal.ToListAsync();
         }
 
         // GET api/<AppealController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<Appeal>> Get(int id)
         {
-            return "value";
-        }
+            var appeal = await _context.Appeal.FindAsync(id);
 
+            if (appeal == null)
+            {
+                return NotFound();
+            }
+
+            return appeal;
+        }
+        
         // POST api/<AppealController>
         [HttpPost]
         public void Post([FromBody] string value)
