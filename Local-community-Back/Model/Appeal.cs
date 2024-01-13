@@ -8,7 +8,8 @@ namespace Local_community_Back.Model
         {
             Appeal,
             Complaints,
-            Statements
+            Statements,
+            Proposal
         }
         public int Id { get; set; }
         public string FullName { get; set; }
