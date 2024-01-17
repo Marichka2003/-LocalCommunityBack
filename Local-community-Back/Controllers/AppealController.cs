@@ -1,5 +1,6 @@
 ﻿using Local_community_Back.Data;
 using Local_community_Back.Model;
+using Local_community_Back.ModelDto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,11 +38,28 @@ namespace Local_community_Back.Controllers
 
             return appeal;
         }
-        
+
         // POST api/<AppealController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<Appeal>> Post([FromForm] AppealDto appealDto)
         {
+            var appeal = new Appeal
+            {
+                FullName = appealDto.FullName,
+                Adress = appealDto.Address,
+                Description = appealDto.Description,
+                PhoneNumber = appealDto.PhoneNumber,
+                ImageName = appealDto.ImageName
+            };
+
+            if (appealDto.Type != "Appeal" && appealDto.Type != "Complaints" && appealDto.Type != "Statements" && appealDto.Type != "Proposal")
+            {
+                return BadRequest("Invalid appeal type.");
+            }
+            _context.Appeal.Add(appeal);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", new { id = appeal.Id }, appeal);
         }
 
         // PUT api/<AppealController>/5
