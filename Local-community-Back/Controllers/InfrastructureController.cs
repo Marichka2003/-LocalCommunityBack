@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Local_community_Back.Data;
+using Local_community_Back.Model;
+using Local_community_Back.ModelDto;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,24 +12,50 @@ namespace Local_community_Back.Controllers
     [ApiController]
     public class InfrastructureController : ControllerBase
     {
+        private readonly CommunityContext _context;
+        public InfrastructureController(CommunityContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/<InfrastructureController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<Infrastructure>>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return await _context.Infrastructure.ToListAsync();
         }
 
         // GET api/<InfrastructureController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<Infrastructure>> Get(int id)
         {
-            return "value";
+            var infrastructure = await _context.Infrastructure.FindAsync(id);
+
+            if (infrastructure == null)
+            {
+                return NotFound();
+            }
+
+            return infrastructure;
         }
 
         // POST api/<InfrastructureController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<Infrastructure>> Post([FromForm] InfrastructureDto infrastructureDto)
         {
+            var infrastructure = new Infrastructure
+            {
+                Name = infrastructureDto.Name,
+                Type = infrastructureDto.Type,
+                Adress = infrastructureDto.Adress,
+                Description = infrastructureDto.Description,
+                ImageName = infrastructureDto.ImageName
+            };
+
+            _context.Infrastructure.Add(infrastructure);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", new { id = infrastructure.Id }, infrastructure);
         }
 
         // PUT api/<InfrastructureController>/5

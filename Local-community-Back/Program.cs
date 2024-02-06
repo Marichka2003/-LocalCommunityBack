@@ -1,19 +1,27 @@
 using Local_community_Back.Data;
+using Local_community_Back.Model;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Реєстрація служби CommunitySearch
+builder.Services.AddScoped<CommunitySearch>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAnyOrigin",
-         builder => builder.AllowAnyOrigin());
+    options.AddPolicy("AllowSpecificOrigins",
+     builder => builder.WithOrigins("http://localhost:3000")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader());
 });
 
 // Add services to the container.
 builder.Services.AddDbContext<CommunityContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CommunityContext")));
+builder.Services.AddDbContext<UserContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UserContext")));
 builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -24,7 +32,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "YourCookieName";
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+    });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,7 +49,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAnyOrigin");
+app.UseCors("AllowSpecificOrigins");
 app.Use(async (context, next) =>
 {
     if (context.Request.Method == "OPTIONS")

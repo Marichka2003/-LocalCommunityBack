@@ -5,8 +5,6 @@
         public enum CouncilApparatus
         {
             Head,
-            Secretary,
-            DeputyHead,
             VillageElder,
             AccountingMember,
             FinancialMember,
@@ -22,7 +20,6 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public CouncilApparatus Type { get; set; }
-        public int Phonenumber { get; set; }
-        public int Description { get; set; }
+        public string Description { get; set; }
     }
 }

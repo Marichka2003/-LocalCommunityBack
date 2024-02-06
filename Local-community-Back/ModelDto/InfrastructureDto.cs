@@ -1,14 +1,9 @@
-﻿namespace Local_community_Back.Model
+﻿using static Local_community_Back.Model.Infrastructure;
+
+namespace Local_community_Back.ModelDto
 {
-    public class Infrastructure
+    public class InfrastructureDto
     {
-        public enum InfrastructureType
-        {
-            NewProject,
-            Excursion,
-            All
-        }
-        public int Id { get; set; }
         public InfrastructureType Type { get; set; }
         public string Name { get; set; }
         public string Adress { get; set; }

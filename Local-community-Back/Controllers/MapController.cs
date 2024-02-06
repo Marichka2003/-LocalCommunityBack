@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Local_community_Back.Data;
+using Local_community_Back.Model;
+using Local_community_Back.ModelDto;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,24 +12,51 @@ namespace Local_community_Back.Controllers
     [ApiController]
     public class MapController : ControllerBase
     {
+        private readonly CommunityContext _context;
+        public MapController(CommunityContext context)
+        {
+            _context = context;
+        }
         // GET: api/<MapController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<Map>>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return await _context.Map.ToListAsync();
         }
 
         // GET api/<MapController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<Map>> Get(int id)
         {
-            return "value";
+            var map = await _context.Map.FindAsync(id);
+
+            if (map == null)
+            {
+                return NotFound();
+            }
+
+            return map;
         }
 
         // POST api/<MapController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<Map>> Post([FromForm] MapDto mapDto)
         {
+            var map = new Map
+            {
+                Name = mapDto.Name,
+                Description = mapDto.Description,
+                ImageName = mapDto.ImageName,
+                COATUU = mapDto.COATUU,
+                CATOTTG = mapDto.CATOTTG,
+                Population = mapDto.Population
+            };
+    
+
+            _context.Map.Add(map);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", new { id = map.Id }, map);
         }
 
         // PUT api/<MapController>/5
