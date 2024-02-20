@@ -39,7 +39,25 @@ namespace Local_community_Back.Model
                 .Where(f => EF.Functions.Like(f.SocialPrograms, $"%{query}%") || EF.Functions.Like(f.IncomeInformation, $"%{query}%"))
                 .ToListAsync();
         }
+        public async Task<List<News>> SearchNews(string query)
+        {
+            return await _context.News
+                .Where(n => EF.Functions.Like(n.Name, $"%{query}%") || EF.Functions.Like(n.Description, $"%{query}%"))
+                .ToListAsync();
+        }
 
-        // Додайте аналогічні методи для інших моделей (Infrastructure, Map і т.д.)
+        public async Task<List<Map>> SearchMaps(string query)
+        {
+            return await _context.Map
+                .Where(m => EF.Functions.Like(m.Name, $"%{query}%") || EF.Functions.Like(m.Description, $"%{query}%"))
+                .ToListAsync();
+        }
+
+        public async Task<List<Infrastructure>> SearchInfrastructures(string query)
+        {
+            return await _context.Infrastructure
+                .Where(i => EF.Functions.Like(i.Name, $"%{query}%") || EF.Functions.Like(i.Description, $"%{query}%"))
+                .ToListAsync();
+        }
     }
 }
