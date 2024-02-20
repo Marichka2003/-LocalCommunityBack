@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class UserContext : DbContext
 {
-    public DbSet<User> Exploiter { get; set; }
+    public DbSet<User> User { get; set; }
 
     public UserContext() { }
 

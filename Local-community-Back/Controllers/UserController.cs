@@ -26,22 +26,22 @@ namespace Local_community_Back.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            if (_context.Exploiter == null)
+            if (_context.User == null)
             {
                 return NotFound();
             }
-            return await _context.Exploiter.ToListAsync();
+            return await _context.User.ToListAsync();
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            if (_context.Exploiter == null)
+            if (_context.User == null)
             {
                 return NotFound();
             }
-            var user = await _context.Exploiter.FindAsync(id);
+            var user = await _context.User.FindAsync(id);
 
             if (user == null)
             {
@@ -55,11 +55,11 @@ namespace Local_community_Back.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            if (_context.Exploiter == null)
+            if (_context.User == null)
             {
                 return Problem("Entity set 'LocalCommunityDBContext.User' is null.");
             }
-            _context.Exploiter.Add(user);
+            _context.User.Add(user);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
@@ -99,24 +99,24 @@ namespace Local_community_Back.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            if (_context.Exploiter == null)
+            if (_context.User == null)
             {
                 return NotFound();
             }
-            var user = await _context.Exploiter.FindAsync(id);
+            var user = await _context.User.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Exploiter.Remove(user);
+            _context.User.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
         private bool UserExists(int id)
         {
-            return (_context.Exploiter?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
         }
         [AllowAnonymous]
         // POST api/auth/login
@@ -124,7 +124,7 @@ namespace Local_community_Back.Controllers
         public async Task<IActionResult> AuthenticateUser([FromBody] LoginModel loginModel)
         {
             // Знаходження користувача за електронною адресою
-            var user = await _context.Exploiter.SingleOrDefaultAsync(u => u.Email == loginModel.Email);
+            var user = await _context.User.SingleOrDefaultAsync(u => u.Email == loginModel.Email);
 
             // Перевірка, чи користувач існує та чи вірний пароль
             if (user != null && user.Password == loginModel.Password)

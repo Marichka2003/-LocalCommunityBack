@@ -28,8 +28,14 @@ namespace Local_community_Back.Migrations.User
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
@@ -44,9 +50,12 @@ namespace Local_community_Back.Migrations.User
                         .IsUnicode(false)
                         .HasColumnType("varchar(150)");
 
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Exploiter");
+                    b.ToTable("User");
                 });
 #pragma warning restore 612, 618
         }

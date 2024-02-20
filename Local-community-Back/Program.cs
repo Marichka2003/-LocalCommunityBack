@@ -71,4 +71,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapControllerRoute(
+    name: "subscribe",
+    pattern: "api/subscription/subscribe",
+    defaults: new { controller = "Subscription", action = "Subscribe" });
+
+app.MapControllerRoute(
+    name: "unsubscribe",
+    pattern: "api/subscription/unsubscribe",
+    defaults: new { controller = "Subscription", action = "Unsubscribe" });
 app.Run();
